@@ -13,6 +13,7 @@ import org.springframework.util.CollectionUtils;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -30,15 +31,20 @@ public class TransactionTest {
     private EntityManager entityManager;
 
     @Transactional
-    public void doCall1() {
-        transactionTestInnerCall.innerCall();
-
+    public Topic doCall1() {
         Topic topic = new Topic();
-        topic.setTopicName("Outer Topic");
-
+        topic.setTopicName("Outer Topic " + UUID.randomUUID());
         repository.save(topic);
+        return repository.findById(topic.getId()).get();
 
 //        if (true) throw new RuntimeException("Rollback");
+    }
+
+    @Transactional
+    public Topic doUpdate(Long id) {
+        Topic topic = repository.findById(id).get();
+        topic.setTopicDescription("Defined value");
+        return repository.save(topic);
     }
 
     @Transactional

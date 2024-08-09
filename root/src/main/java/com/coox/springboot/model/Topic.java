@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.ColumnTransformer;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -31,6 +32,10 @@ public class Topic {
 
     @Column(name = "topic_name")
     private String topicName;
+
+    @ColumnTransformer(write = "COALESCE(?, 'default value')")
+    @Column(name = "topic_description")
+    private String topicDescription;
 
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
